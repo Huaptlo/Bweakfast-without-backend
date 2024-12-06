@@ -13,7 +13,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const app = initializeApp(firebaseConfig);
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('note-form');
