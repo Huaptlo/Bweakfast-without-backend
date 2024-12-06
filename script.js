@@ -1,21 +1,9 @@
-// Firebase configuration (replace with your Firebase project's config)
-const firebaseConfig = {
-    apiKey: "AIzaSyDSWuVpts51J-Tx_-eseP42pLLjmB1e7KQ",
-    authDomain: "bweakfast-without-backend.firebaseapp.com",
-    databaseURL: "https://bweakfast-without-backend-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "bweakfast-without-backend",
-    storageBucket: "bweakfast-without-backend.firebasestorage.app",
-    messagingSenderId: "338641180715",
-    appId: "1:338641180715:web:c7f2109a52db4e44f6b26e"
-  };
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('note-form');
     const calendarGrid = document.getElementById('calendar-grid');
+
+    // Store calendar data in localStorage
+    const calendarData = JSON.parse(localStorage.getItem('calendarData')) || {};
 
     function formatDate(date) {
         const options = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -33,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return dates;
     }
 
-    function renderCalendar(calendarData) {
+    function renderCalendar() {
         calendarGrid.innerHTML = '';
         const weekDates = getWeekDates();
 
@@ -95,22 +83,20 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const participantsRef = db.ref(`calendarData/${date}`);
-        participantsRef.once('value', (snapshot) => {
-            const participants = snapshot.val() || [];
-            if (!participants.includes(name)) {
-                participants.push(name);
-                participantsRef.set(participants);
-            }
-        });
+        if (!calendarData[date]) {
+            calendarData[date] = [];
+        }
+        if (!calendarData[date].includes(name)) {
+            calendarData[date].push(name);
+        }
 
+        // Save to localStorage
+        localStorage.setItem('calendarData', JSON.stringify(calendarData));
+
+        renderCalendar();
         form.reset();
     });
 
-    // Listen for changes in the database
-    const calendarDataRef = db.ref('calendarData');
-    calendarDataRef.on('value', (snapshot) => {
-        const calendarData = snapshot.val() || {};
-        renderCalendar(calendarData);
-    });
+    // Initial render
+    renderCalendar();
 });
