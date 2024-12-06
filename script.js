@@ -1,5 +1,3 @@
-import { initializeApp } from "firebase/app";
-
 // Firebase configuration (replace with your Firebase project's config)
 const firebaseConfig = {
     apiKey: "AIzaSyDSWuVpts51J-Tx_-eseP42pLLjmB1e7KQ",
@@ -12,7 +10,8 @@ const firebaseConfig = {
   };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('note-form');
